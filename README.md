@@ -1,4 +1,4 @@
-# Depth from Defocus Repository 
+# UDP Streamer 
 This repository is a test to create a jumbo frame UDP streamer. 
 
 ## Dependencies
