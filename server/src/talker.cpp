@@ -33,11 +33,11 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 
-typdef SOCKET int
+typedef int SOCKET;
 #endif
 
 #define SERVERPORT "45001"	// the port users will be connecting to
-const uint32_t data_size = 2052;
+uint32_t data_size = 2052;
 
 int main(int argc, char *argv[])
 {
@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
 #endif
 
 	memset(&hints, 0, sizeof hints);
-	hints.ai_family = AF_INET; // set to AF_INET to use IPv4
+	hints.ai_family = AF_INET6; // set to AF_INET to use IPv4
 	hints.ai_socktype = SOCK_DGRAM;
 
 	if ((rv = getaddrinfo(argv[1], SERVERPORT, &hints, &servinfo)) != 0) 

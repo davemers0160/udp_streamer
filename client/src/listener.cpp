@@ -34,11 +34,11 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 
-typdef SOCKET int
+typedef int SOCKET;
 #endif
 
 #define MYPORT "45001"	// the port users will be connecting to
-const uint32_t data_size = 2052;
+uint32_t data_size = 2052;
 #define MAXBUFLEN 100
 
 // get sockaddr, IPv4 or IPv6:
@@ -96,7 +96,7 @@ int main(void)
 #endif
 
 	memset(&hints, 0, sizeof hints);
-	hints.ai_family = AF_INET; // set to AF_INET to use IPv4
+	hints.ai_family = AF_INET6; // set to AF_INET to use IPv4
 	hints.ai_socktype = SOCK_DGRAM;
 	hints.ai_flags = AI_PASSIVE; // use my IP
 
@@ -141,8 +141,8 @@ int main(void)
 	printf("listener: waiting to recvfrom...\n");
 
 	addr_len = sizeof their_addr;
-	numbytes = recvfrom(sockfd, (char*)tx_data.data(), data_size*4 - 1, 0, (struct sockaddr*)&their_addr, &addr_len);
-	if (numbytes == SOCKET_ERROR)
+	numbytes = recvfrom(sockfd, (char*)tx_data.data(), data_size*4, 0, (struct sockaddr*)&their_addr, &addr_len);
+	if (numbytes == -1)
 	{
 #if defined(_WIN32) | defined(__WIN32__) | defined(__WIN32) | defined(_WIN64) | defined(__WIN64)
 		result = WSAGetLastError();
