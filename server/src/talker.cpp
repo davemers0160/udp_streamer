@@ -37,7 +37,7 @@ typdef SOCKET int
 #endif
 
 #define SERVERPORT "45001"	// the port users will be connecting to
-const uint32_t data_size = 8224;
+const uint32_t data_size = 2052;
 
 int main(int argc, char *argv[])
 {
