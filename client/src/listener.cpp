@@ -37,6 +37,8 @@
 typedef int SOCKET;
 #endif
 
+#include <raw_udp_socket.h>
+
 #define MYPORT "45001"	// the port users will be connecting to
 uint32_t data_size = 2052;
 #define MAXBUFLEN 100
@@ -82,7 +84,7 @@ int main(void)
 	std::string error_msg = "";
 
 	std::vector<uint32_t> tx_data(65536);
-
+/*
 #if defined(_WIN32) | defined(__WIN32__) | defined(__WIN32) | defined(_WIN64) | defined(__WIN64)
 	const uint16_t dllVersion = MAKEWORD(2, 2);
 	WSADATA wsaData;
@@ -151,9 +153,16 @@ int main(void)
 		perror("recvfrom");
 		//exit(1);
 	}
+*/
 
-	printf("listener: got packet from %s\n", inet_ntop(their_addr.ss_family, get_in_addr((struct sockaddr *)&their_addr), s, sizeof s));
-	printf("listener: packet is %d bytes long\n", numbytes);
+
+    raw_udp_socket rus("lo", 45001);
+
+    int32_t	n = rus.receive_data((uint8_t*)tx_data.data(), 2052*4);
+    
+    
+	//printf("listener: got packet from %s\n", inet_ntop(their_addr.ss_family, get_in_addr((struct sockaddr *)&their_addr), s, sizeof s));
+	printf("listener: packet is %d bytes long\n", n);
 	//buf[numbytes] = '\0';
 	for (idx = 0; idx < data_size; ++idx)
 	{
