@@ -82,9 +82,10 @@ int main(void)
 	socklen_t addr_len;
 	char s[INET6_ADDRSTRLEN];
 	std::string error_msg = "";
-
+    int32_t	n;
+    
 	std::vector<uint32_t> tx_data(65536);
-/*
+
 #if defined(_WIN32) | defined(__WIN32__) | defined(__WIN32) | defined(_WIN64) | defined(__WIN64)
 	const uint16_t dllVersion = MAKEWORD(2, 2);
 	WSADATA wsaData;
@@ -98,7 +99,7 @@ int main(void)
 #endif
 
 	memset(&hints, 0, sizeof hints);
-	hints.ai_family = AF_INET6; // set to AF_INET to use IPv4
+	hints.ai_family = AF_INET; // set to AF_INET to use IPv4
 	hints.ai_socktype = SOCK_DGRAM;
 	hints.ai_flags = AI_PASSIVE; // use my IP
 
@@ -143,8 +144,8 @@ int main(void)
 	printf("listener: waiting to recvfrom...\n");
 
 	addr_len = sizeof their_addr;
-	numbytes = recvfrom(sockfd, (char*)tx_data.data(), data_size*4, 0, (struct sockaddr*)&their_addr, &addr_len);
-	if (numbytes == -1)
+	n = recvfrom(sockfd, (char*)tx_data.data(), data_size*4, 0, (struct sockaddr*)&their_addr, &addr_len);
+	if (n == -1)
 	{
 #if defined(_WIN32) | defined(__WIN32__) | defined(__WIN32) | defined(_WIN64) | defined(__WIN64)
 		result = WSAGetLastError();
@@ -153,18 +154,21 @@ int main(void)
 		perror("recvfrom");
 		//exit(1);
 	}
-*/
 
-
-    raw_udp_socket rus("lo", 45001);
-
-    int32_t	n = rus.receive_data((uint8_t*)tx_data.data(), 2052*4);
+    printf("listener: packet is %d bytes long\n", n);
     
+    
+/*
+    raw_udp_socket rus("enp35s0", 45001);
+
+    n = rus.receive_data((uint8_t*)tx_data.data(), 2052*4);
+ */   
     
 	//printf("listener: got packet from %s\n", inet_ntop(their_addr.ss_family, get_in_addr((struct sockaddr *)&their_addr), s, sizeof s));
-	printf("listener: packet is %d bytes long\n", n);
-	//buf[numbytes] = '\0';
-	for (idx = 0; idx < data_size; ++idx)
+	//printf("listener: packet is %d bytes long\n", n);
+
+	//for (idx = 0; idx < (n>>2); ++idx)
+	for (idx = 0; idx < 10; ++idx)
 	{
 		std::cout << tx_data[idx] << std::endl;
 	}

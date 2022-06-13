@@ -34,25 +34,35 @@ public:
             std::cout << "socket: " << std::to_string(sock) << std::endl;
         }
         
+        
+        int opt = 1;
+        setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+    
+    
         set_promisc(true);
 
-        //struct sockaddr_in my_addr;
-        //memset((char*)&my_addr, 0, sizeof(my_addr));
-        //my_addr.sin_family = AF_PACKET;
-        //my_addr.sin_port = htons(port);
-        //my_addr.sin_addr.s_addr = INADDR_ANY;
+        /*
+        struct sockaddr_in my_addr;
+        memset((char*)&my_addr, 0, sizeof(my_addr));
+        my_addr.sin_family = AF_PACKET;
+        my_addr.sin_port = htons(port);
+        my_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+        
+        int bind_error = bind(sock, (struct sockaddr*)&my_addr, sizeof(my_addr));
+        */
         
         struct sockaddr_ll sa;
         memset((char*)&sa, 0, sizeof(sa));
-        
         sa.sll_family = PF_PACKET;
         sa.sll_ifindex = ifindex;
         sa.sll_protocol = htons(ETH_P_ALL);
-
-        if (bind(sock, reinterpret_cast<struct sockaddr *>(&sa), sizeof(sa)) < 0)
-        //if (bind(sock, (struct sockaddr*)&my_addr, sizeof(my_addr)) < 0) 
+        
+        int bind_error = bind(sock, reinterpret_cast<struct sockaddr *>(&sa), sizeof(sa));
+        
+        if (bind_error < 0)
         {
-            std::cout << "bind error" << std::endl;
+            std::cout << "bind error: " << bind_error << std::endl;
+            
         }
     }
 
