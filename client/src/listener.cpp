@@ -85,7 +85,7 @@ int main(void)
     int32_t	n;
     
 	std::vector<uint32_t> tx_data(65536);
-
+/*
 #if defined(_WIN32) | defined(__WIN32__) | defined(__WIN32) | defined(_WIN64) | defined(__WIN64)
 	const uint16_t dllVersion = MAKEWORD(2, 2);
 	WSADATA wsaData;
@@ -155,18 +155,18 @@ int main(void)
 		//exit(1);
 	}
 
-    printf("listener: packet is %d bytes long\n", n);
+	//printf("listener: got packet from %s\n", inet_ntop(their_addr.ss_family, get_in_addr((struct sockaddr *)&their_addr), s, sizeof s));
+	
+    */
     
-    
-/*
+
     raw_udp_socket rus("enp35s0", 45001);
 
     n = rus.receive_data((uint8_t*)tx_data.data(), 2052*4);
- */   
-    
-	//printf("listener: got packet from %s\n", inet_ntop(their_addr.ss_family, get_in_addr((struct sockaddr *)&their_addr), s, sizeof s));
-	//printf("listener: packet is %d bytes long\n", n);
 
+
+    printf("listener: packet is %d bytes long\n", n);
+    
 	//for (idx = 0; idx < (n>>2); ++idx)
 	for (idx = 0; idx < 10; ++idx)
 	{
