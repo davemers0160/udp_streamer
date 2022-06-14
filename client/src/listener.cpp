@@ -10,6 +10,8 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <sstream>
+//#include <iomanip>
 
 #if defined(_WIN32) | defined(__WIN32__) | defined(__WIN32) | defined(_WIN64) | defined(__WIN64)
 
@@ -85,7 +87,7 @@ int main(void)
     int32_t	n;
     
 	std::vector<uint32_t> tx_data(65536);
-/*
+
 #if defined(_WIN32) | defined(__WIN32__) | defined(__WIN32) | defined(_WIN64) | defined(__WIN64)
 	const uint16_t dllVersion = MAKEWORD(2, 2);
 	WSADATA wsaData;
@@ -157,20 +159,26 @@ int main(void)
 
 	//printf("listener: got packet from %s\n", inet_ntop(their_addr.ss_family, get_in_addr((struct sockaddr *)&their_addr), s, sizeof s));
 	
-    */
     
-
+    
+/*
     raw_udp_socket rus("enp35s0", 45001);
 
     n = rus.receive_data((uint8_t*)tx_data.data(), 2052*4);
-
+*/
 
     printf("listener: packet is %d bytes long\n", n);
     
 	//for (idx = 0; idx < (n>>2); ++idx)
-	for (idx = 0; idx < 10; ++idx)
+	for (idx = 0; idx < 20; ++idx)
 	{
-		std::cout << tx_data[idx] << std::endl;
+
+	    //std::cout << std::hex << "0x" << ((tx_data[idx]>>24) & 0x00FF) << " ";
+	    //std::cout << std::hex << "0x" << ((tx_data[idx]>>16) & 0x00FF) << " ";
+	    //std::cout << std::hex << "0x" << ((tx_data[idx]>>8) & 0x00FF) << " ";
+	    //std::cout << std::hex << "0x" << ((tx_data[idx]) & 0x00FF) << std::endl;
+	    
+	    std::cout << std::hex << "0x" << tx_data[idx] << std::endl;
 	}
 	//printf("listener: packet contains \"%s\"\n", buf);
 
