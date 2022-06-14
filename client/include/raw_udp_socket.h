@@ -28,7 +28,7 @@ public:
     {
 
         // create an unnamed socket for reception of ethernet packets -  PF_PACKET, AF_PACKET, SOCK_RAW, SOCK_DGRAM
-        sock = socket( PF_PACKET, SOCK_DGRAM, htons( ETH_P_ALL ) ); 
+        sock = socket( AF_PACKET, SOCK_DGRAM, htons( ETH_P_ALL ) ); 
         if (sock < 0) 
         {
             std::cout << "socket: " << std::to_string(sock) << std::endl;
@@ -39,6 +39,8 @@ public:
         setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
     
     
+        get_index();
+        
         set_promisc(true);
 
         /*
@@ -53,7 +55,7 @@ public:
         
         struct sockaddr_ll sa;
         memset((char*)&sa, 0, sizeof(sa));
-        sa.sll_family = PF_PACKET;
+        sa.sll_family = AF_PACKET;
         sa.sll_ifindex = ifindex;
         sa.sll_protocol = htons(ETH_P_ALL);
         
@@ -144,8 +146,7 @@ private:
         strncpy(ifr.ifr_name, interface.c_str(), IFNAMSIZ);
 
         if (ioctl(sock, SIOCGIFINDEX, &ifr) != 0)
-            throw std::system_error(errno, std::system_category(),
-                                    "unable to get interface index");
+            std::cout << "unable to get interface index" <<std::endl;
 
         ifindex = ifr.ifr_ifindex;
     }
