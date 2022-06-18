@@ -1,8 +1,6 @@
 #ifndef RAW_UDP_SOCKET_H_
 #define RAW_UDP_SOCKET_H_
 
-
-
 #include <iostream>
 #include <string>
 
@@ -28,30 +26,23 @@ public:
     {
 
         // create an unnamed socket for reception of ethernet packets -  PF_PACKET, AF_PACKET, SOCK_RAW, SOCK_DGRAM
-        sock = socket( AF_PACKET, SOCK_DGRAM, htons( ETH_P_ALL ) ); 
+        sock = socket( AF_PACKET, SOCK_DGRAM, htons( ETH_P_IP ) ); 
         if (sock < 0) 
         {
             std::cout << "socket: " << std::to_string(sock) << std::endl;
         }
-        
-        
+               
         int opt = 1;
         setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
     
-    
-        get_index();
-        
-        set_promisc(true);
+        strncpy(ifr.ifr_name, interface.c_str(), IFNAMSIZ);
 
-        /*
-        struct sockaddr_in my_addr;
-        memset((char*)&my_addr, 0, sizeof(my_addr));
-        my_addr.sin_family = AF_PACKET;
-        my_addr.sin_port = htons(port);
-        my_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-        
-        int bind_error = bind(sock, (struct sockaddr*)&my_addr, sizeof(my_addr));
-        */
+        if (ioctl(sock, SIOCGIFINDEX, &ifr) != 0)
+            std::cout << "unable to get interface index" <<std::endl;
+
+        ifindex = ifr.ifr_ifindex;
+               
+        set_promisc(true);
         
         struct sockaddr_ll sa;
         memset((char*)&sa, 0, sizeof(sa));
@@ -64,7 +55,6 @@ public:
         if (bind_error < 0)
         {
             std::cout << "bind error: " << bind_error << std::endl;
-            
         }
     }
 
@@ -89,7 +79,7 @@ private:
     // internal private variables
     int32_t sock;
     uint16_t port;
-    struct ifreq ethreq;
+    struct ifreq ifr;
     int32_t ifindex;
 
     std::string interface;
@@ -116,21 +106,20 @@ private:
         //                             "unable to set interface promisc");
 
         // enable 'promiscuous mode' for the selected socket interface
-        strncpy(ethreq.ifr_name, interface.c_str(), IFNAMSIZ);
 
-        if ( ioctl( sock, SIOCGIFFLAGS, &ethreq ) < 0 )
+        if ( ioctl( sock, SIOCGIFFLAGS, &ifr ) < 0 )
         { 
             perror( "ioctl: get ifflags" ); 
             exit(1); 
         }
 
         if (enable)
-        	ethreq.ifr_flags |= IFF_PROMISC;                // enable 'promiscuous' mode
+        	ifr.ifr_flags |= IFF_PROMISC;                // enable 'promiscuous' mode
         else
-            ethreq.ifr_flags &= ~IFF_PROMISC;               // turn off the interface's 'promiscuous' mode
+            ifr.ifr_flags &= ~IFF_PROMISC;               // turn off the interface's 'promiscuous' mode
           
         // set the flag
-        if ( ioctl( sock, SIOCSIFFLAGS, &ethreq ) < 0 )
+        if ( ioctl( sock, SIOCSIFFLAGS, &ifr ) < 0 )
         { 
             perror( "ioctl: set ifflags" ); 
             exit(1); 
